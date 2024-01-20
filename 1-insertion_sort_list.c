@@ -1,52 +1,6 @@
 #include "sort.h"
 
 /**
- * swap_list - This swaps values of 2 nodes in doubly linked list
- *
- * @head: The first node to swap
- * @tail: The second node to swap
- * Return: Pointer to the head node
- */
-listint_t *swap_list(listint_t **head, listint_t **tail)
-{
-	if ((*head)->prev == NULL && (*tail)->next == NULL)
-	{
-		(*tail)->prev = (*head)->prev;
-		(*head)->next = (*tail)->next;
-		(*tail)->next = *head;
-		(*head)->prev = *tail;
-		return ((*tail));
-	}
-	else if ((*head)->prev == NULL)
-	{
-		(*tail)->next->prev = *head;
-		(*tail)->prev = (*head)->prev;
-		(*head)->next = (*tail)->next;
-		(*tail)->next = *head;
-		(*head)->prev = *tail;
-		return ((*tail));
-	}
-	else if ((*tail)->next == NULL)
-	{
-		(*head)->prev->next = *tail;
-		(*tail)->prev = (*head)->prev;
-		(*head)->next = (*tail)->next;
-		(*tail)->next = *head;
-		(*head)->prev = *tail;
-		return ((*tail)->prev);
-	}
-	else
-	{
-		(*head)->prev->next = *tail;
-		(*tail)->next->prev = *head;
-		(*tail)->prev = (*head)->prev;
-		(*head)->next = (*tail)->next;
-		(*tail)->next = *head;
-		return ((*tail)->prev);
-	}
-}
-
-/**
  * insertion_sort_list - Sorts a doubly linked list of integers
  * using the Insertion Sort algorithm
  *
@@ -54,29 +8,34 @@ listint_t *swap_list(listint_t **head, listint_t **tail)
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *head, *tail;
+	listint_t *current, *temp;
 
-	if (list)
+	if (!list)
+		return;
+
+	for (current = *list; current; current = current->next)
 	{
-		head = *list;
-		while (head->next != NULL)
+		while (current->next && (current->next->n < current->n))
 		{
-			tail = head->next;
-			if ((head->n > tail->n) && (head->prev == NULL))
-			{
-				head = swap_list(&head, &tail);
-				*list = head;
-				print_list(*list);
-			}
-			else if (head->n > tail->n)
-			{
-				head = swap_list(&head, &tail);
-				print_list(*list);
-			}
+			temp = current->next;
+			current->next = temp->next;
+			temp->prev = current->prev;
+
+			if (current->prev)
+				current->prev->next = temp;
+
+			if (temp->next)
+				temp->next->prev = current;
+
+			current->prev = temp;
+			temp->next = current;
+
+			if (temp->prev)
+				current = temp->prev;
 			else
-			{
-				head = head->next;
-			}
+				*list = temp;
+
+			print_list(*list);
 		}
 	}
 }
