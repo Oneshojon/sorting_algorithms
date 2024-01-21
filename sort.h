@@ -25,5 +25,10 @@ void print_list(const listint_t *list);
 void print_array(const int *array, size_t size);
 void bubble_sort(int *array, size_t size);
 void insertion_sort_list(listint_t **list);
+void swap(int *a, int *b);
+int lumoto_partition(int arr[], int low, int high, size_t size);
+void quick_sort_helper(int arr[], int low, int high, size_t size);
+void quick_sort(int *arr, size_t size);
+
 
 #endif
