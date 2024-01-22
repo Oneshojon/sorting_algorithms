@@ -24,7 +24,8 @@ void print_parse(int *array, const char *text, size_t low, size_t high)
 /**
  * join_parse - Joins and sort values in the array parsed
  * @arr: Array to be sorted
- * @low: Ending index of the array passed
+ * @low: Starting index of the array passed
+ * @high: Ending index of the array passed
  * @mid: Midpoint of the split array
  * @copy: Array to store sorted values
  */
@@ -51,7 +52,7 @@ void join_parse(int *arr, size_t low, size_t high, size_t mid, int *copy)
 }
 
 /**
- * parse - Recursively perform merge sort with the given array
+ * parser - Recursively perform merge sort with the given array
  * @array: Array to be sorted
  * @lb: Lower bound
  * @ub: Upper bound
@@ -63,8 +64,8 @@ void parser(int *array, size_t lb, size_t ub, int *copy)
 
 	if (lb < ub)
 	{
-		mid = (ub + lb -1) / 2;
-	
+		mid = (ub + lb - 1) / 2;
+
 		parser(array, lb, mid, copy);
 		parser(array, mid + 1, ub, copy);
 
