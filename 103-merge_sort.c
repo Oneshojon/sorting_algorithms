@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "sort.h"
 
 /**
@@ -64,7 +65,7 @@ void parser(int *array, size_t lb, size_t ub, int *copy)
 
 	if (lb < ub)
 	{
-		mid = (ub + lb - 1) / 2;
+		mid = lb + (ub - lb) / 2;
 
 		parser(array, lb, mid, copy);
 		parser(array, mid + 1, ub, copy);

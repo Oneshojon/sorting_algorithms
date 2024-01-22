@@ -3,7 +3,7 @@
 /**
  * nodes_swap - This swaps the nodes in a list
  * @list: First node in doubly linked list
- * @second: The address of first node
+ * @first: The address of first node
  * @second: The address of second node
  */
 
