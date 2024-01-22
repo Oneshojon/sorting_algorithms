@@ -1,96 +1,90 @@
-#include <stdio.h>
 #include "sort.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * print_parse - Prints value of array
- * @array: The array to be printed
- * @text: The text to be printed alongside values
- * @low: Lower bound
- * @high: Upper bound
+ * TMerge - Sorts and merges the sub arrays in source
+ * @start: Starting index (inclusive) for the left sub array
+ * @middle: End index (exclusive) for the left sub array and
+ * starting index (inclusive) for the right sub array
+ * @end: End index (exclusive) for the right sub array
+ * @dest: Destination for data
+ * @source: Source of data
+ *
+ * Return: void
  */
-void print_parse(int *array, const char *text, size_t low, size_t high)
+
+void TMerge(size_t start, size_t middle, size_t end, int *dest, int *source)
 {
-	size_t i;
-	char *separator = "";
+	size_t i, j, k;
 
-	printf("[%s]: ", text);
-	for (i = low; i <= high; i++)
+	printf("Merging...\n");
+	printf("[left]: ");
+	print_array(source + start, middle - start);
+	printf("[right]: ");
+	print_array(source + middle, end - middle);
+	i = start;
+	j = middle;
+	for (k = start; k < end; k++)
 	{
-		printf("%s%d", separator, array[i]);
-		separator = ", ";
-	}
-	printf("\n");
-}
-
-/**
- * join_parse - Joins and sort values in the array parsed
- * @arr: Array to be sorted
- * @low: Starting index of the array passed
- * @high: Ending index of the array passed
- * @mid: Midpoint of the split array
- * @copy: Array to store sorted values
- */
-void join_parse(int *arr, size_t low, size_t high, size_t mid, int *copy)
-{
-	size_t hiStart = mid + 1, newIndex, loStart = low, i;
-
-	printf("merging...\n");
-	print_parse(arr, "left", low, mid);
-	print_parse(arr, "right", mid + 1, high);
-
-	for (newIndex = low; newIndex <= high; newIndex++)  /* Fill sorted values */
-	{
-		if ((loStart <= mid && arr[loStart] <= arr[hiStart]) || hiStart > high)
-			copy[newIndex] = arr[loStart++];
+		if (i < middle && (j >= end || source[i] <= source[j]))
+		{
+			dest[k] = source[i];
+			i++;
+		}
 		else
-			copy[newIndex] = arr[hiStart++];
+		{
+			dest[k] = source[j];
+			j++;
+		}
 	}
-
-	for (i = low; i <= high; i++)  /* Update initial array with sorted arr */
-		arr[i] = copy[i];
-
-	print_parse(arr, "Done", low, high);
+	printf("[Done]: ");
+	print_array(dest + start, end - start);
 }
 
 /**
- * parser - Recursively perform merge sort with the given array
- * @array: Array to be sorted
- * @lb: Lower bound
- * @ub: Upper bound
- * @copy: Array to store sorted values
+ * TSplitMerge - recursively splits the array and merges the sorted arrays
+ * @start: starting index (inclusive)
+ * @end: end index (exclusive)
+ * @array: the array to sort
+ * @copy: a copy of the array
+ *
+ * Return: void
  */
-void parser(int *array, size_t lb, size_t ub, int *copy)
+void TSplitMerge(size_t start, size_t end, int *array, int *copy)
 {
-	size_t mid;
+	size_t middle;
 
-	if (lb < ub)
-	{
-		mid = lb + (ub - lb) / 2;
-
-		parser(array, lb, mid, copy);
-		parser(array, mid + 1, ub, copy);
-
-		join_parse(array, lb, ub, mid, copy);
-	}
+	if (end - start < 2)
+		return;
+	middle = (start + end) / 2;
+	TSplitMerge(start, middle, array, copy);
+	TSplitMerge(middle, end, array, copy);
+	TMerge(start, middle, end, array, copy);
+	for (middle = start; middle < end; middle++)
+		copy[middle] = array[middle];
 }
 
 /**
- * merge-sort - The application of the merge sort algorithm
- * to sort an array of integers
- * @array: Array to be sorted
- * @size: Size of the array
+ * merge_sort - sorts an array of integers in ascending order using the
+ * Merge sort algorithm
+ * @array: array to sort
+ * @size: size of the array
+ *
+ * Return: void
  */
 void merge_sort(int *array, size_t size)
 {
-	int *clone;
+	size_t i;
+	int *copy;
 
-	if (!array || size < 2) /* Only one value or less in array */
+	if (array == NULL || size < 2)
 		return;
-
-	clone = malloc(sizeof(int) * size);
-	if (!clone)
+	copy = malloc(sizeof(int) * size);
+	if (copy == NULL)
 		return;
-
-	parser(array, 0, size - 1, clone);
-	free(clone);
+	for (i = 0; i < size; i++)
+		copy[i] = array[i];
+	TSplitMerge(0, size, array, copy);
+	free(copy);
 }
