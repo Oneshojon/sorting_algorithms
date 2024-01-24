@@ -28,6 +28,7 @@ void insertion_sort_list(listint_t **list);
 void merge_sort(int *array, size_t size);
 void heap_sort(int *array, size_t size);
 void quick_sort_hoare(int *array, size_t size);
+void sort_deck(deck_node_t **deck);
 
 /** quick sort **/
 int lumoto_partition(int arr[], int low, int high, size_t size);
